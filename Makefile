@@ -8,6 +8,7 @@
 ################################################################################
 
 TARGET_DOCKER_REGISTRY ?= my.docker.registry
+TARGET_AWS_ECR_REGISTRY_ID ?= 111111111
 TARGET_IMAGE_NAME ?= ssc-generator
 DOCKER_TAG ?= $(shell git log --pretty=format:'%h' -n 1)
 
@@ -28,6 +29,7 @@ build:
 
 publish:
 	@echo "${YELLOW}Publishing Docker image \"${TARGET_DOCKER_REGISTRY}/${TARGET_IMAGE_NAME}:${DOCKER_TAG}\"${RESET}"
+	@$(shell aws ecr get-login --no-include-email --registry-ids ${TARGET_AWS_ECR_REGISTRY_ID})
 	@docker push ${TARGET_DOCKER_REGISTRY}/${TARGET_IMAGE_NAME}:${DOCKER_TAG}
 
 generate:
