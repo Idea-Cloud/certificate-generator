@@ -8,8 +8,9 @@
 ################################################################################
 
 TARGET_DOCKER_REGISTRY ?= my.docker.registry
+TARGET_AWS_ECR_REGISTRY_ID ?= 111111111
 TARGET_IMAGE_NAME ?= ssc-generator
-DOCKER_TAG ?= 1
+DOCKER_TAG ?= $(shell git log --pretty=format:'%h' -n 1)
 
 PASSWORD ?= "sscpwd"
 DEST_DIR ?= "/data/cert"
@@ -28,14 +29,16 @@ build:
 
 publish:
 	@echo "${YELLOW}Publishing Docker image \"${TARGET_DOCKER_REGISTRY}/${TARGET_IMAGE_NAME}:${DOCKER_TAG}\"${RESET}"
+	@$(shell aws ecr get-login --no-include-email --registry-ids ${TARGET_AWS_ECR_REGISTRY_ID})
 	@docker push ${TARGET_DOCKER_REGISTRY}/${TARGET_IMAGE_NAME}:${DOCKER_TAG}
 
 generate:
 	@echo "${YELLOW}Generate certificates${RESET}"
 	@docker run --volume ${PWD}:/data --user ${LOCAL_USER_UID}:${LOCAL_USER_GID} \
 	--env DEST_DIR=${DEST_DIR} --env PASSWORD=${PASSWORD} --env DOMAIN=${DOMAIN} --env USERGROUP=${LOCAL_USER_GID} --env USERID=${LOCAL_USER_UID} \
-	${TARGET_IMAGE_NAME}:${DOCKER_TAG}
+	${TARGET_DOCKER_REGISTRY}/${TARGET_IMAGE_NAME}:${DOCKER_TAG}
 
 clean:
 	@echo "${YELLOW}Cleaning${RESET}"
 	@rm -rf cert
+	@docker rmi -f ${TARGET_DOCKER_REGISTRY}/${TARGET_IMAGE_NAME}:${DOCKER_TAG}
