@@ -22,5 +22,5 @@ make clean
 
 ## Publish image (if you want)
 ```bash
-TARGET_DOCKER_REGISTRY=<my.dicker.registry> make publish
+TARGET_DOCKER_REGISTRY=<my.docker.registry> make publish
 ```
