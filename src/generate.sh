@@ -40,7 +40,7 @@ if [ ! -f $CERTIF_BASE.chained.crt ] ; then
     openssl x509 -req -passin pass:$PASSWORD -in $CERTIF_BASE.csr -CA $ROOTCA_FULL_PATH.crt -CAkey $ROOTCA_FULL_PATH.key -CAcreateserial -out $CERTIF_BASE.crt -sha256 -days 500
     echo "Remove passphrase"
     openssl rsa -in $CERTIF_BASE.key -out $CERTIF_BASE.key
-    echo "${YELLOW}Check the certificate and matches"
+    echo "Check the certificate and matches"
     md5crt=$(openssl x509 -noout -modulus -in $CERTIF_BASE.crt | openssl md5 | awk '{print $2}')
     md5key=$(openssl rsa -modulus -noout -in $CERTIF_BASE.key | openssl md5 | awk '{print $2}')
     if [ $md5crt != $md5key ];
