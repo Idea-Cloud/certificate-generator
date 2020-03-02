@@ -1,6 +1,7 @@
 # Self-Signed Certificate generator
 
 ## Prerequisites
+* Only tested on Fedora 30 (5.4.19-100.fc30.x86_64)
 * Docker version > 19.03.6
 * GNU Make > 4.2.1
 
